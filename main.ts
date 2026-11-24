@@ -9,6 +9,16 @@ import { join } from "node:path";
 const entry =
   "The office printer only jams on urgent documents, so IT renamed it the deadline detector.";
 
+// The gate allows 1 to 200 characters; refuse to write an overlong line
+// rather than submit an entry the scorer would mark invalid.
+const maxEntryChars = 200;
+if ([...entry].length > maxEntryChars) {
+  console.error(
+    `entry is ${[...entry].length} characters, over the ${maxEntryChars}-character gate`,
+  );
+  process.exit(1);
+}
+
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outputDir, { recursive: true });
 writeFileSync(join(outputDir, "entry.txt"), entry, "utf8");
